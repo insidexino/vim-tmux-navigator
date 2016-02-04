@@ -68,6 +68,11 @@ function! s:TmuxAwareNavigate(direction)
   let tmux_last_pane = (a:direction == 'p' && s:tmux_is_last_pane)
   if !tmux_last_pane
     call s:VimNavigate(a:direction)
+	" In zoom mode, do not select another pane
+	silent call system('tmux list-panes -F "#F" | grep -q Z')
+	if !v:shell_error
+      return
+    endif
   endif
   " Forward the switch panes command to tmux if:
   " a) we're toggling between the last tmux pane;
